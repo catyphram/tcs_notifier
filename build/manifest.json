@@ -1,0 +1,30 @@
+{
+	"manifest_version": 2,
+
+	"name": "TCS Notifier",
+	"description": "Notifies you about things you want to get notified. ;)",
+	"version": "0.0.1",
+	"icons": {
+		"128": "./resources/images/browser_icon.png"
+	},
+	"browser_action": {
+		"default_icon": {
+			"19": "./resources/images/browser_icon.png"
+		},
+		"default_title": "TCS Notifier",
+		"default_popup": "./popup.html"
+	},
+	"background": {
+		"persistent": true,
+		"scripts": [
+			"./resources/js/jquery-2.1.1.min.js",
+			"./background.js"
+		]
+	},
+	"permissions": [
+		"storage",
+		"alarms",
+		"notifications"
+	],
+	"options_page": "./settings.html"
+}

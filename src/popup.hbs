@@ -1,0 +1,10 @@
+<table class="table table-hover table-striped">
+	{{#each data.items}}
+		<tr><td><div>
+			<h4>{{this.title}}</h4>
+			<p>Datum: {{this.date}}</p>
+			<p>Anzahl Abonnenten: {{this.subscriber}}</p>
+		</div></td></tr>
+	{{/each}}
+</table>
+<div style="text-align:center"><a class="btn btn-primary" href="{{buttonURL}}" target="_blank">Zur Aktivierung</a></div>

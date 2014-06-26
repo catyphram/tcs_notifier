@@ -1,0 +1,17 @@
+{
+  "name": "tcs_notifier",
+  "version": "0.0.1",
+  "description": "A TCS Notifier",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Dominik Süß",
+  "license": "MIT",
+  "devDependencies": {
+    "gulp": "^3.8.2",
+    "coffee-script": "^1.7.1",
+    "gulp-coffee": "^2.0.1",
+    "handlebars": "^2.0.0-alpha.4",
+    "gulp-shell": "^0.2.7"
+  }
+}
