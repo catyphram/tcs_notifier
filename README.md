@@ -114,6 +114,8 @@ The time in minutes the extension will request the data from the specified URL.
 URL to the api node that will return an array of objects.
 * Popup Button URL  
 URL that will open in a new window when clicked on the Button in the Popup-Window.
+* Notification Title  
+Title of the desktop notification displayed above the item list.
 * Enable Notifications  
 Whether to display a desktop notification or not when new data is available.
 

@@ -5,7 +5,8 @@
       'requestInterval': parseInt($("#request-interval").val(), 10),
       'requestURL': $("#request-url").val(),
       'popupButtonURL': $("#popup-button-url").val(),
-      'enableNotifications': $("#enable-notifications").prop("checked")
+      'enableNotifications': $("#enable-notifications").prop("checked"),
+      'notificationTitle': $("#notification-title").val()
     }, function() {
       $("#settings-saved").html("The settings have been saved.");
     });
@@ -16,12 +17,14 @@
       'requestInterval': 1,
       'requestURL': 'http://localhost:3000/',
       'popupButtonURL': 'https://www.google.de/',
-      'enableNotifications': true
+      'enableNotifications': true,
+      'notificationTitle': 'New Notification!'
     }, function(options) {
       $('#request-interval').val(options.requestInterval);
       $('#request-url').val(options.requestURL);
       $('#popup-button-url').val(options.popupButtonURL);
       $('#enable-notifications').prop('checked', options.enableNotifications);
+      $("#notification-title").val(options.notificationTitle);
     });
   });
 

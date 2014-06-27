@@ -49,6 +49,7 @@ class Background
 		chrome.storage.sync.get
 			'requestURL': 'http://localhost:3000/'
 			'enableNotifications': true
+			'notificationTitle': 'New Notification!'
 		, ( options ) =>
 
 			$.get options.requestURL, ( data, textstatus, jqXHR ) =>
@@ -65,8 +66,8 @@ class Background
 				if options.enableNotifications
 					chrome.notifications.create "",
 						"type": "list",
-						"title": "New Notification.",
-						"message": "A new notification!",
+						"title": options.notificationTitle,
+						"message": "",
 						"iconUrl": "./resources/images/browser_icon.png",
 						"items": _notificationItems
 					, ->
@@ -99,7 +100,6 @@ background = new Background()
 @getData = ->
 	background.data
 
-# Setting: Request URL, URL für Aktivierung, Enable Notifications
 # Dokumentation allgemein, für Notifier
 
 

@@ -5,6 +5,7 @@ $('#form-settings').submit ( event ) ->
 		'requestURL': $( "#request-url" ).val()
 		'popupButtonURL': $( "#popup-button-url" ).val()
 		'enableNotifications': $( "#enable-notifications" ).prop( "checked" )
+		'notificationTitle': $( "#notification-title" ).val()
 	, ->
 		$( "#settings-saved" ).html "The settings have been saved."
 		return
@@ -16,10 +17,12 @@ $( document ).ready ->
 		'requestURL': 'http://localhost:3000/'
 		'popupButtonURL': 'https://www.google.de/'
 		'enableNotifications': true
+		'notificationTitle': 'New Notification!'
 	, ( options ) ->
 		$( '#request-interval' ).val options.requestInterval
 		$( '#request-url' ).val options.requestURL
 		$( '#popup-button-url' ).val options.popupButtonURL
 		$( '#enable-notifications' ).prop( 'checked', options.enableNotifications )
+		$( "#notification-title" ).val options.notificationTitle
 		return
 	return

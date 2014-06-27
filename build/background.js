@@ -59,7 +59,8 @@
       _notificationItems = [];
       chrome.storage.sync.get({
         'requestURL': 'http://localhost:3000/',
-        'enableNotifications': true
+        'enableNotifications': true,
+        'notificationTitle': 'New Notification!'
       }, (function(_this) {
         return function(options) {
           $.get(options.requestURL, function(data, textstatus, jqXHR) {
@@ -85,8 +86,8 @@
             if (options.enableNotifications) {
               chrome.notifications.create("", {
                 "type": "list",
-                "title": "New Notification.",
-                "message": "A new notification!",
+                "title": options.notificationTitle,
+                "message": "",
                 "iconUrl": "./resources/images/browser_icon.png",
                 "items": _notificationItems
               }, function() {});
