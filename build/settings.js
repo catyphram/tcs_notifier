@@ -1,5 +1,5 @@
 (function() {
-  var Settings, settings,
+  var Settings, _settings,
     __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
   Settings = (function() {
@@ -11,7 +11,7 @@
 
     Settings.prototype.initialize = function() {
       chrome.storage.sync.get({
-        'extensionTitle': 'TCS Notifier'
+        'extensionTitle': _settings.extensionTitle != null ? _settings.extensionTitle : ""
       }, (function(_this) {
         return function(options) {
           document.title = "" + options.extensionTitle + " Settings";
@@ -48,11 +48,11 @@
             $("#settings-header").html("" + _this.docTitle + " <small>Settings</small>");
           }
           chrome.storage.sync.get({
-            'requestInterval': 1,
-            'requestURL': 'http://localhost:3000/',
-            'popupButtonURL': 'https://www.google.de/',
-            'enableNotifications': true,
-            'notificationTitle': 'New Notification!'
+            'requestInterval': _settings.requestInterval != null ? _settings.requestInterval : 1,
+            'requestURL': _settings.requestURL != null ? _settings.requestURL : "",
+            'popupButtonURL': _settings.popupButtonURL != null ? _settings.popupButtonURL : "",
+            'enableNotifications': _settings.enableNotifications != null ? _settings.enableNotifications : true,
+            'notificationTitle': _settings.notificationTitle != null ? _settings.notificationTitle : ""
           }, function(options) {
             $('#request-interval').val(options.requestInterval);
             $('#request-url').val(options.requestURL);
@@ -71,6 +71,13 @@
 
   })();
 
-  settings = new Settings();
+  _settings = {};
+
+  $.getJSON('./settings.json').done(function(data) {
+    _settings = data;
+  }).always(function() {
+    var settings;
+    settings = new Settings();
+  });
 
 }).call(this);

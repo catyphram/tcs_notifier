@@ -84,10 +84,10 @@ Run local version:
 
 	./node_modules/.bin/gulp
 	
-The `build/` folder is completely built from the `src/` folder.
+The `build/` folder is completely built from the `src/` folder. Please only modify the files in `src/`!
 	
 	
-## API Node Response
+## API Node
 
 The api node defined via the exstension setting 'Request URL' will be requested with an empty GET request.
 
@@ -121,3 +121,12 @@ Title of the desktop notification, displayed above the item list.
 * Enable Notifications  
 Whether to display a desktop notification or not when new data is available.
 
+## settings.json
+
+This JSON formatted file contains the default values of the extension settings.
+
+If you have never saved your settings ( value of a option is `undefined` ) these settings will be used instead. ( Note: Empty Strings are not `undefined`. )
+
+That means: If you load this extension the first time these settings will be loaded till you once saved the extension settings in the settings page.
+
+Feel free to modify them, so you don't need to reconfigure your settings every time you reinstall the extension.

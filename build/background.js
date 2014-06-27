@@ -1,5 +1,5 @@
 (function() {
-  var Background, background,
+  var Background, _settings,
     __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
   Background = (function() {
@@ -15,8 +15,8 @@
         "items": []
       };
       chrome.storage.sync.get({
-        'requestInterval': 1,
-        'extensionTitle': 'TCS Notifier'
+        'requestInterval': _settings.requestInterval != null ? _settings.requestInterval : 1,
+        'extensionTitle': _settings.extensionTitle != null ? _settings.extensionTitle : ""
       }, function(options) {
         chrome.browserAction.setTitle({
           'title': options.extensionTitle
@@ -62,9 +62,9 @@
       var _notificationItems;
       _notificationItems = [];
       chrome.storage.sync.get({
-        'requestURL': 'http://localhost:3000/',
-        'enableNotifications': true,
-        'notificationTitle': 'New Notification!'
+        'requestURL': _settings.requestURL != null ? _settings.requestURL : "",
+        'enableNotifications': _settings.enableNotifications != null ? _settings.enableNotifications : true,
+        'notificationTitle': _settings.notificationTitle != null ? _settings.notificationTitle : ""
       }, (function(_this) {
         return function(options) {
           $.get(options.requestURL, function(data, textstatus, jqXHR) {
@@ -121,10 +121,18 @@
 
   })();
 
-  background = new Background();
+  _settings = {};
 
-  this.getData = function() {
-    return background.data;
-  };
+  $.getJSON('./settings.json').done(function(data) {
+    _settings = data;
+  }).always((function(_this) {
+    return function() {
+      var background;
+      background = new Background();
+      _this.getData = function() {
+        return background.data;
+      };
+    };
+  })(this));
 
 }).call(this);

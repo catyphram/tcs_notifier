@@ -1,11 +1,11 @@
 class Background
 
-# Build files auslagern in src, dann kopieren
 # switch to event page
 # options.json
 # tutorial
 # badge background color option
 # test: empty reply, wrong reply, options wrong/empty?
+# notification link -> homepage, option click on action button -> homepage
 	constructor: ->
 
 		@initialize()
@@ -16,8 +16,8 @@ class Background
 		@data = { "items": [] }
 
 		chrome.storage.sync.get
-			'requestInterval': 1
-			'extensionTitle': 'TCS Notifier'
+			'requestInterval': if _settings.requestInterval? then _settings.requestInterval else 1
+			'extensionTitle': if _settings.extensionTitle? then _settings.extensionTitle else ""
 		, ( options ) ->
 			chrome.browserAction.setTitle { 'title': options.extensionTitle }
 			chrome.alarms.create "periodInMinutes": options.requestInterval
@@ -55,9 +55,9 @@ class Background
 		_notificationItems = []
 
 		chrome.storage.sync.get
-			'requestURL': 'http://localhost:3000/'
-			'enableNotifications': true
-			'notificationTitle': 'New Notification!'
+			'requestURL': if _settings.requestURL? then _settings.requestURL else ""
+			'enableNotifications': if _settings.enableNotifications? then _settings.enableNotifications else true
+			'notificationTitle': if _settings.notificationTitle? then _settings.notificationTitle else ""
 		, ( options ) =>
 
 			$.get options.requestURL, ( data, textstatus, jqXHR ) =>
@@ -104,10 +104,15 @@ class Background
 			return
 		return
 
-background = new Background()
-@getData = ->
-	background.data
+_settings = {}
 
-# Dokumentation allgemein, für Notifier
-
-
+$.getJSON './settings.json'
+	.done ( data ) ->
+		_settings = data
+		return
+	.always =>
+		background = new Background()
+		@getData = ->
+			# return
+			background.data
+		return

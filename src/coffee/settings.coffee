@@ -7,7 +7,7 @@ class Settings
 	initialize: =>
 
 		chrome.storage.sync.get
-			'extensionTitle': 'TCS Notifier'
+			'extensionTitle': if _settings.extensionTitle? then _settings.extensionTitle else ""
 		, ( options ) =>
 			document.title = "#{options.extensionTitle} Settings"
 			@docTitle = options.extensionTitle
@@ -43,11 +43,11 @@ class Settings
 				$( "#settings-header" ).html( "#{@docTitle} <small>Settings</small>" )
 
 			chrome.storage.sync.get
-				'requestInterval': 1
-				'requestURL': 'http://localhost:3000/'
-				'popupButtonURL': 'https://www.google.de/'
-				'enableNotifications': true
-				'notificationTitle': 'New Notification!'
+				'requestInterval': if _settings.requestInterval? then _settings.requestInterval else 1
+				'requestURL': if _settings.requestURL? then _settings.requestURL else ""
+				'popupButtonURL': if _settings.popupButtonURL? then _settings.popupButtonURL else ""
+				'enableNotifications': if _settings.enableNotifications? then _settings.enableNotifications else true
+				'notificationTitle': if _settings.notificationTitle? then _settings.notificationTitle else ""
 			, ( options ) =>
 				$( '#request-interval' ).val options.requestInterval
 				$( '#request-url' ).val options.requestURL
@@ -61,4 +61,13 @@ class Settings
 				return
 			return
 
-settings = new Settings()
+
+_settings = {}
+
+$.getJSON './settings.json'
+	.done ( data ) ->
+		_settings = data
+		return
+	.always ->
+		settings = new Settings()
+		return

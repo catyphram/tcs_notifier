@@ -8,7 +8,7 @@ class Popup
 	initialize: =>
 
 		chrome.storage.sync.get
-			'extensionTitle': 'TCS Notifier'
+			'extensionTitle': if _settings.extensionTitle? then _settings.extensionTitle else ""
 		, ( options ) ->
 			document.title = options.extensionTitle
 			return
@@ -24,17 +24,25 @@ class Popup
 	render: =>
 
 		chrome.storage.sync.get
-			'popupButtonURL': 'https://www.google.de/'
+			'popupButtonURL': if _settings.popupButtonURL? then _settings.popupButtonURL else ""
 		, ( options ) =>
 
 			_content =
 				"data": @bp.getData()
-				"buttonURL": options.popupButtonURL
+				"buttonURL": _settings.popupButtonURL
 
-			console.log _content
 			$( "#content" ).html Handlebars.templates.popup _content
 
 			return
 		return
 
-popup = new Popup()
+
+_settings = {}
+
+$.getJSON './settings.json'
+	.done ( data ) ->
+		_settings = data
+		return
+	.always ->
+		popup = new Popup()
+		return

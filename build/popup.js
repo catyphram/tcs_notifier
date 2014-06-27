@@ -1,5 +1,5 @@
 (function() {
-  var Popup, popup,
+  var Popup, _settings,
     __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
   Popup = (function() {
@@ -12,7 +12,7 @@
 
     Popup.prototype.initialize = function() {
       chrome.storage.sync.get({
-        'extensionTitle': 'TCS Notifier'
+        'extensionTitle': _settings.extensionTitle != null ? _settings.extensionTitle : ""
       }, function(options) {
         document.title = options.extensionTitle;
       });
@@ -28,15 +28,14 @@
 
     Popup.prototype.render = function() {
       chrome.storage.sync.get({
-        'popupButtonURL': 'https://www.google.de/'
+        'popupButtonURL': _settings.popupButtonURL != null ? _settings.popupButtonURL : ""
       }, (function(_this) {
         return function(options) {
           var _content;
           _content = {
             "data": _this.bp.getData(),
-            "buttonURL": options.popupButtonURL
+            "buttonURL": _settings.popupButtonURL
           };
-          console.log(_content);
           $("#content").html(Handlebars.templates.popup(_content));
         };
       })(this));
@@ -46,6 +45,13 @@
 
   })();
 
-  popup = new Popup();
+  _settings = {};
+
+  $.getJSON('./settings.json').done(function(data) {
+    _settings = data;
+  }).always(function() {
+    var popup;
+    popup = new Popup();
+  });
 
 }).call(this);
