@@ -13,4 +13,8 @@ gulp.task 'templates', ->
 	gulp.src './src/*.hbs'
 		.pipe( shell( [ "./node_modules/.bin/handlebars <%= file.path %> -e hbs -f ./build/popup-template.js " ] ) )
 
+gulp.task 'watch', ->
+	gulp.watch [ './src/*.coffee', './src/*.hbs' ], [ 'coffee', 'templates' ]
+	return
+
 gulp.task 'default', [ 'coffee', 'templates' ]

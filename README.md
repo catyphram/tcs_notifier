@@ -78,11 +78,11 @@ or use the local version already downloaded with the `npm install` before.
 
 Run global version:
 
-	`gulp`
+	gulp
 
 Run local version:
 
-	`./node_modules/.bin/gulp`
+	./node_modules/.bin/gulp
 	
 	
 ## API Node Response
@@ -115,7 +115,7 @@ URL to the api node that will return an array of objects.
 * Popup Button URL  
 URL that will open in a new window when clicked on the Button in the Popup-Window.
 * Notification Title  
-Title of the desktop notification displayed above the item list.
+Title of the desktop notification, displayed above the item list.
 * Enable Notifications  
 Whether to display a desktop notification or not when new data is available.
 

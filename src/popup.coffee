@@ -3,9 +3,16 @@ class Popup
 	constructor: ->
 
 		@initialize()
+		return
 
 	initialize: =>
 
+		chrome.storage.sync.get
+			'extensionTitle': 'TCS Notifier'
+		, ( options ) ->
+			document.title = options.extensionTitle
+			return
+			
 		chrome.runtime.getBackgroundPage ( @bp ) =>
 
 			$( document ).ready =>

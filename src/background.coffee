@@ -1,5 +1,11 @@
 class Background
 
+# Build files auslagern in src, dann kopieren
+# switch to event page
+# options.json
+# tutorial
+# badge background color option
+# test: empty reply, wrong reply, options wrong/empty?
 	constructor: ->
 
 		@initialize()
@@ -11,7 +17,9 @@ class Background
 
 		chrome.storage.sync.get
 			'requestInterval': 1
+			'extensionTitle': 'TCS Notifier'
 		, ( options ) ->
+			chrome.browserAction.setTitle { 'title': options.extensionTitle }
 			chrome.alarms.create "periodInMinutes": options.requestInterval
 			chrome.alarms.onAlarm.addListener( @updateData )
 			return

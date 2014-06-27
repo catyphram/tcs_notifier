@@ -15,8 +15,12 @@
         "items": []
       };
       chrome.storage.sync.get({
-        'requestInterval': 1
+        'requestInterval': 1,
+        'extensionTitle': 'TCS Notifier'
       }, function(options) {
+        chrome.browserAction.setTitle({
+          'title': options.extensionTitle
+        });
         chrome.alarms.create({
           "periodInMinutes": options.requestInterval
         });

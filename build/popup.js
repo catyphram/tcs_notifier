@@ -7,9 +7,15 @@
       this.render = __bind(this.render, this);
       this.initialize = __bind(this.initialize, this);
       this.initialize();
+      return;
     }
 
     Popup.prototype.initialize = function() {
+      chrome.storage.sync.get({
+        'extensionTitle': 'TCS Notifier'
+      }, function(options) {
+        document.title = options.extensionTitle;
+      });
       chrome.runtime.getBackgroundPage((function(_this) {
         return function(bp) {
           _this.bp = bp;
