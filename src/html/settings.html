@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+	<html>
+	<head>
+		<meta charset="utf-8" />
+		<link rel="stylesheet" href="./resources/css/bootstrap-3.1.1.min.css">
+	</head>
+	<body>
+		<div class="container">
+			<h2 style="margin-bottom: 20px;" id="settings-header"></h2>
+			<form id="form-settings" class="form">
+				<div class="form-group">
+					<label for="extension-title">Personal Extension Name:</label>
+					<input id="extension-title" class="form-control" type="text"></input>
+				</div>
+				<div class="form-group">
+					<label for="request-interval">Request Interval (in minutes):</label>
+					<input id="request-interval" class="form-control" type="number" min="1" max="60"></input>
+				</div>
+				<div class="form-group">
+					<label for="request-url">Request URL:</label>
+					<input id="request-url" class="form-control" type="text"></input>
+				</div>
+				<div class="form-group">
+					<label for="popup-button-url">Popup Button URL:</label>
+					<input id="popup-button-url" class="form-control" type="text"></input>
+				</div>
+				<div class="form-group">
+					<label for="notification-title">Notification Title:</label>
+					<input id="notification-title" class="form-control" type="text"></input>
+				</div>
+				<div class="form-group">
+					<label for="enable-notifications">Enable Notifications:</label>
+					<input id="enable-notifications" class="form-control" type="checkbox"></input>
+				</div>
+				<div class="form-group">
+					<button type="submit" class="btn btn-default">Save Settings</button>
+				</div>
+			</form>
+			<div>
+				<p id="settings-saved"></p>
+			</div>
+		</div>
+	</body>
+	<script src="./resources/js/jquery-2.1.1.min.js"></script>
+	<script src="./settings.js"></script>
+</html>

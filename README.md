@@ -18,7 +18,7 @@ Don't even try running this extension in Firefox, it won't work! (Well, i guess,
 	
 ### 2. Better make a copy of the folder since you may modify the files (especially the template)
 
-	cp -avR tcs_notifier copy_of_tcs_notifier
+	cp -aR tcs_notifier copy_of_tcs_notifier
 	
 ### 3. And change into the directory
 
@@ -68,7 +68,7 @@ Don't forget to rebuild the extension!!
 
 ## <a name="build"></a>Build
 
-If you manually change the source files ( everything in `src/` ) you need to rebuild the `build` folder. Gulp will do this work for us.
+If you manually change the source files ( everything in `src/` ) you need to rebuild the `build/` folder. Gulp will do this work for us.
 
 You can either install gulp global (if not already installed) via 
 	
@@ -83,6 +83,8 @@ Run global version:
 Run local version:
 
 	./node_modules/.bin/gulp
+	
+The `build/` folder is completely built from the `src/` folder.
 	
 	
 ## API Node Response
