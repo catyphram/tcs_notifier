@@ -115,7 +115,13 @@ The time in minutes the extension will request the data from the specified URL.
 * Request URL  
 URL to the api node that will return an array of objects.
 * Popup Button URL  
-URL that will open in a new window when clicked on the Button in the Popup-Window.
+URL that will open in a new window when clicked on the Button in the Popup-Window.  
+* Browser Button Action
+Action that should be performed when clicked on the button in the browser bar.
+	* Open Popup Window (internal: `openPopup`)
+	Open the Popup Window with the list of available items.
+	* Open Popup Button Link (internal: `openLink`)
+	Open the link specified in `Popup Button URL` in a new tab.
 * Notification Title  
 Title of the desktop notification, displayed above the item list.
 * Enable Notifications  
