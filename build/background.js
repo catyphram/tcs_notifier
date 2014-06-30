@@ -25,9 +25,11 @@
       })(this));
       chrome.storage.sync.get({
         'requestInterval': _settings.requestInterval != null ? _settings.requestInterval : 1,
-        'extensionTitle': _settings.extensionTitle != null ? _settings.extensionTitle : ""
+        'extensionTitle': _settings.extensionTitle != null ? _settings.extensionTitle : "",
+        'browserButtonAction': _settings.browserButtonAction != null ? _settings.browserButtonAction : "openPopup"
       }, (function(_this) {
         return function(options) {
+          _this.enablePopup(options.browserButtonAction === "openPopup");
           chrome.browserAction.setTitle({
             'title': options.extensionTitle
           });
@@ -47,13 +49,9 @@
             _this.updateData();
           } else if (changes.browserButtonAction != null) {
             if (changes.browserButtonAction.newValue === "openLink") {
-              chrome.browserAction.setPopup({
-                'popup': ""
-              });
+              _this.enablePopup(false);
             } else if (changes.browserButtonAction.oldValue === "openLink") {
-              chrome.browserAction.setPopup({
-                'popup': "popup.html"
-              });
+              _this.enablePopup(true);
             }
           }
         };
@@ -165,6 +163,12 @@
       chrome.storage.sync.set({
         'data': this.data
       }, function() {});
+    };
+
+    Background.prototype.enablePopup = function(enabled) {
+      chrome.browserAction.setPopup({
+        'popup': enabled ? "popup.html" : ""
+      });
     };
 
     return Background;

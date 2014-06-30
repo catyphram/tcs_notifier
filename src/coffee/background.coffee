@@ -4,12 +4,12 @@ class Background
 # badge background color option
 # test: empty reply, wrong reply
 # display empty message if no item available
-# notification link -> homepage, option click on action button -> homepage
 # loading timer when requesting
 # better look for options page
 # backgroundpage nearly complete with events, so not complete init every time
 # option open link, oder nothing when notif clicked
 # async, so settings set before get, and notif wont show even though disabled
+# check all race conditions
 
 	constructor: ->
 
@@ -31,7 +31,9 @@ class Background
 		chrome.storage.sync.get
 			'requestInterval': if _settings.requestInterval? then _settings.requestInterval else 1
 			'extensionTitle': if _settings.extensionTitle? then _settings.extensionTitle else ""
+			'browserButtonAction': if _settings.browserButtonAction? then _settings.browserButtonAction else "openPopup"
 		, ( options ) =>
+			@enablePopup options.browserButtonAction is "openPopup"
 			chrome.browserAction.setTitle { 'title': options.extensionTitle }
 			chrome.alarms.create "periodInMinutes": options.requestInterval
 			chrome.alarms.onAlarm.addListener( @updateData )
@@ -45,11 +47,9 @@ class Background
 				@updateData()
 			else if changes.browserButtonAction?
 				if changes.browserButtonAction.newValue is "openLink"
-					chrome.browserAction.setPopup
-						'popup': ""
+					@enablePopup false	
 				else if changes.browserButtonAction.oldValue is "openLink"
-					chrome.browserAction.setPopup
-						'popup': "popup.html"
+					@enablePopup true
 
 			return
 
@@ -153,6 +153,13 @@ class Background
 			'data': @data
 		, ->
 			return
+
+		return
+
+	enablePopup: ( enabled ) ->
+
+		chrome.browserAction.setPopup
+			'popup': if enabled then "popup.html" else ""
 
 		return
 
