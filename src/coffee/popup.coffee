@@ -32,6 +32,9 @@ class Popup
 				"buttonURL": _settings.popupButtonURL
 
 			$( "#content" ).html Handlebars.templates.popup _content
+			# Sometimes the button is focused... Strange, i don't know why
+			# So i will just focus it always... That attention seeker
+			$( ".btn" ).focus()
 
 			return
 		return
@@ -43,6 +46,9 @@ $.getJSON './settings.json'
 	.done ( data ) ->
 		_settings = data
 		return
-	.always ->
+	.always =>
 		popup = new Popup()
+		@render = ->
+			popup.render()
+			return
 		return

@@ -37,6 +37,7 @@
             "buttonURL": _settings.popupButtonURL
           };
           $("#content").html(Handlebars.templates.popup(_content));
+          $(".btn").focus();
         };
       })(this));
     };
@@ -49,9 +50,14 @@
 
   $.getJSON('./settings.json').done(function(data) {
     _settings = data;
-  }).always(function() {
-    var popup;
-    popup = new Popup();
-  });
+  }).always((function(_this) {
+    return function() {
+      var popup;
+      popup = new Popup();
+      _this.render = function() {
+        popup.render();
+      };
+    };
+  })(this));
 
 }).call(this);

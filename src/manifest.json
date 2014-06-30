@@ -15,7 +15,7 @@
 		"default_popup": "./popup.html"
 	},
 	"background": {
-		"persistent": true,
+		"persistent": false,
 		"scripts": [
 			"./resources/js/jquery-2.1.1.min.js",
 			"./background.js"
@@ -24,7 +24,8 @@
 	"permissions": [
 		"storage",
 		"alarms",
-		"notifications"
+		"notifications",
+		"tabs"
 	],
 	"options_page": "./settings.html"
 }

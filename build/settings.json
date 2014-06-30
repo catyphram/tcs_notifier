@@ -2,7 +2,8 @@
 	"extensionTitle": "TCS Notifier",
 	"requestInterval": 1,
 	"requestURL": "http://localhost:3000/",
-	"popupButtonURL": "www.tcs.de/",
+	"browserButtonAction": "openPopup",
+	"popupButtonURL": "http://www.tcs.de/",
 	"enableNotifications": true,
 	"notificationTitle": "New Notification!"
 }

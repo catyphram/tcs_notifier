@@ -4,6 +4,7 @@
 
   Background = (function() {
     function Background() {
+      this.saveData = __bind(this.saveData, this);
       this.updateData = __bind(this.updateData, this);
       this.initialize = __bind(this.initialize, this);
       this.initialize();
@@ -11,21 +12,31 @@
     }
 
     Background.prototype.initialize = function() {
-      this.data = {
-        "items": []
-      };
+      this._notificationId = "tcs_notifier";
+      chrome.storage.sync.get({
+        'data': {
+          "items": []
+        }
+      }, (function(_this) {
+        return function(storage) {
+          _this.data = storage.data;
+          _this.updateData();
+        };
+      })(this));
       chrome.storage.sync.get({
         'requestInterval': _settings.requestInterval != null ? _settings.requestInterval : 1,
         'extensionTitle': _settings.extensionTitle != null ? _settings.extensionTitle : ""
-      }, function(options) {
-        chrome.browserAction.setTitle({
-          'title': options.extensionTitle
-        });
-        chrome.alarms.create({
-          "periodInMinutes": options.requestInterval
-        });
-        chrome.alarms.onAlarm.addListener(this.updateData);
-      });
+      }, (function(_this) {
+        return function(options) {
+          chrome.browserAction.setTitle({
+            'title': options.extensionTitle
+          });
+          chrome.alarms.create({
+            "periodInMinutes": options.requestInterval
+          });
+          chrome.alarms.onAlarm.addListener(_this.updateData);
+        };
+      })(this));
       chrome.alarms.onAlarm.addListener(this.updateData);
       chrome.storage.onChanged.addListener((function(_this) {
         return function(changes, areaName) {
@@ -34,10 +45,42 @@
               "periodInMinutes": changes.requestInterval.newValue
             });
             _this.updateData();
+          } else if (changes.browserButtonAction != null) {
+            if (changes.browserButtonAction.newValue === "openLink") {
+              chrome.browserAction.setPopup({
+                'popup': ""
+              });
+            } else if (changes.browserButtonAction.oldValue === "openLink") {
+              chrome.browserAction.setPopup({
+                'popup': "popup.html"
+              });
+            }
           }
         };
       })(this));
-      this.updateData();
+      chrome.notifications.onClicked.addListener((function(_this) {
+        return function(notificationId) {
+          if (notificationId === _this._notificationId) {
+            chrome.storage.sync.get({
+              'popupButtonURL': _settings.popupButtonURL != null ? _settings.popupButtonURL : ""
+            }, function(options) {
+              chrome.tabs.create({
+                url: options.popupButtonURL
+              });
+            });
+          }
+        };
+      })(this));
+      chrome.browserAction.onClicked.addListener(function() {
+        chrome.storage.sync.get({
+          'popupButtonURL': _settings.popupButtonURL != null ? _settings.popupButtonURL : ""
+        }, function(options) {
+          return chrome.tabs.create({
+            url: options.popupButtonURL
+          });
+        });
+        return;
+      });
     };
 
     Background.prototype.renderBadgeOk = function(text) {
@@ -87,8 +130,8 @@
                 });
               }
             }
-            if (options.enableNotifications) {
-              chrome.notifications.create("", {
+            if (options.enableNotifications && _notificationItems.length > 0) {
+              chrome.notifications.create(_this._notificationId, {
                 "type": "list",
                 "title": options.notificationTitle,
                 "message": "",
@@ -103,18 +146,25 @@
             } else {
               _this.renderBadgeOk(data.length.toString());
             }
-            _this.data.items = data;
+            _this.saveData(data);
             _popups = chrome.extension.getViews({
               "type": "popup"
             });
             if (_popups.length > 0) {
-              popups[0].popup.render();
+              _popups[0].render();
             }
           }).fail(function(jqXHR, textStatus, errorThrown) {
             _this.renderBadgeFail();
           });
         };
       })(this));
+    };
+
+    Background.prototype.saveData = function(items) {
+      this.data.items = items;
+      chrome.storage.sync.set({
+        'data': this.data
+      }, function() {});
     };
 
     return Background;

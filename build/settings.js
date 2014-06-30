@@ -23,13 +23,19 @@
         };
       })(this));
       $('#form-settings').submit(function(event) {
-        var _extTitle;
+        var _browsserButtonAction, _extTitle;
         event.preventDefault();
         _extTitle = $("#extension-title").val();
+        _browsserButtonAction = $('input:radio[name=browser-button-action-radio]:checked').val();
+        console.log(_browsserButtonAction);
+        if (_browsserButtonAction == null) {
+          _browsserButtonAction = _settings.browserButtonAction;
+        }
         chrome.storage.sync.set({
           'extensionTitle': _extTitle,
           'requestInterval': parseInt($("#request-interval").val(), 10),
           'requestURL': $("#request-url").val(),
+          'browserButtonAction': _browsserButtonAction,
           'popupButtonURL': $("#popup-button-url").val(),
           'enableNotifications': $("#enable-notifications").prop("checked"),
           'notificationTitle': $("#notification-title").val()
@@ -51,16 +57,18 @@
             'requestInterval': _settings.requestInterval != null ? _settings.requestInterval : 1,
             'requestURL': _settings.requestURL != null ? _settings.requestURL : "",
             'popupButtonURL': _settings.popupButtonURL != null ? _settings.popupButtonURL : "",
+            'browserButtonAction': _settings.browserButtonAction != null ? _settings.browserButtonAction : "openPopup",
             'enableNotifications': _settings.enableNotifications != null ? _settings.enableNotifications : true,
             'notificationTitle': _settings.notificationTitle != null ? _settings.notificationTitle : ""
           }, function(options) {
             $('#request-interval').val(options.requestInterval);
             $('#request-url').val(options.requestURL);
             $('#popup-button-url').val(options.popupButtonURL);
+            $("#browser-button-action-" + options.browserButtonAction).prop('checked', true);
             $('#enable-notifications').prop('checked', options.enableNotifications);
-            $("#notification-title").val(options.notificationTitle);
+            $('#notification-title').val(options.notificationTitle);
             if (_this.docTitle != null) {
-              $("#extension-title").val(_this.docTitle);
+              $('#extension-title').val(_this.docTitle);
             }
           });
         };

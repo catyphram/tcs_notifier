@@ -1,11 +1,16 @@
 class Background
 
-# switch to event page
-# options.json
 # tutorial
 # badge background color option
-# test: empty reply, wrong reply, options wrong/empty?
+# test: empty reply, wrong reply
+# display empty message if no item available
 # notification link -> homepage, option click on action button -> homepage
+# loading timer when requesting
+# better look for options page
+# backgroundpage nearly complete with events, so not complete init every time
+# option open link, oder nothing when notif clicked
+# async, so settings set before get, and notif wont show even though disabled
+
 	constructor: ->
 
 		@initialize()
@@ -13,16 +18,24 @@ class Background
 
 	initialize: =>
 
-		@data = { "items": [] }
+		@_notificationId = "tcs_notifier"
+
+		chrome.storage.sync.get
+			'data': { "items": [] }
+		, ( storage ) =>
+			@data = storage.data
+			
+			@updateData()
+			return
 
 		chrome.storage.sync.get
 			'requestInterval': if _settings.requestInterval? then _settings.requestInterval else 1
 			'extensionTitle': if _settings.extensionTitle? then _settings.extensionTitle else ""
-		, ( options ) ->
+		, ( options ) =>
 			chrome.browserAction.setTitle { 'title': options.extensionTitle }
 			chrome.alarms.create "periodInMinutes": options.requestInterval
 			chrome.alarms.onAlarm.addListener( @updateData )
-			return
+			return			
 
 		chrome.alarms.onAlarm.addListener @updateData
 
@@ -30,10 +43,36 @@ class Background
 			if changes.requestInterval?
 				chrome.alarms.create "periodInMinutes": changes.requestInterval.newValue
 				@updateData()
+			else if changes.browserButtonAction?
+				if changes.browserButtonAction.newValue is "openLink"
+					chrome.browserAction.setPopup
+						'popup': ""
+				else if changes.browserButtonAction.oldValue is "openLink"
+					chrome.browserAction.setPopup
+						'popup': "popup.html"
+
 			return
 
-		@updateData()
+		chrome.notifications.onClicked.addListener ( notificationId ) =>
+			if notificationId is @_notificationId
+				chrome.storage.sync.get
+					'popupButtonURL': if _settings.popupButtonURL? then _settings.popupButtonURL else ""
+				, ( options ) ->
+					chrome.tabs.create
+						url: options.popupButtonURL
 
+					return
+			return
+		
+		chrome.browserAction.onClicked.addListener ->
+			chrome.storage.sync.get
+				'popupButtonURL': if _settings.popupButtonURL? then _settings.popupButtonURL else ""
+			, ( options ) ->
+					chrome.tabs.create
+						url: options.popupButtonURL
+
+				return
+			return
 		return
 
 	renderBadgeOk: ( text ) ->
@@ -50,9 +89,11 @@ class Background
 
 		return
 
+
 	updateData: =>
 
 		_notificationItems = []
+		# First argument is the receiver and must be an object, error!
 
 		chrome.storage.sync.get
 			'requestURL': if _settings.requestURL? then _settings.requestURL else ""
@@ -71,8 +112,8 @@ class Background
 					if not _found
 						_notificationItems.push { "title": _newEntry.title, "message": "" }
 
-				if options.enableNotifications
-					chrome.notifications.create "",
+				if options.enableNotifications and _notificationItems.length > 0
+					chrome.notifications.create @_notificationId,
 						"type": "list",
 						"title": options.notificationTitle,
 						"message": "",
@@ -88,20 +129,31 @@ class Background
 				else
 					@renderBadgeOk data.length.toString()
 
-				@data.items = data
+				@saveData data
 
 				_popups = chrome.extension.getViews "type": "popup"
 
-				# Is at least one popup open
+				# Is at least one popup open?
 				if _popups.length > 0
 					# (we only have one though ;) )
-					popups[0].popup.render()
+					_popups[0].render()
 
 				return
 			.fail ( jqXHR, textStatus, errorThrown ) =>
 				@renderBadgeFail()
 				return
 			return
+		return
+
+	saveData: ( items ) =>
+
+		@data.items = items
+
+		chrome.storage.sync.set
+			'data': @data
+		, ->
+			return
+
 		return
 
 _settings = {}
