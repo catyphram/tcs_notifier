@@ -7,27 +7,57 @@ class Background
 # loading timer when requesting
 # better look for options page
 # backgroundpage nearly complete with events, so not complete init every time
-# option open link, oder nothing when notif clicked
+# option open link, or nothing when notif clicked
 # async, so settings set before get, and notif wont show even though disabled
 # check all race conditions
+# link doesnt open when bgp is inactive / listener is not loaded, before the bgp is returned ( jquery ajax fault )
+# don't show popup button if url is empty
+# add some screens to the readme
+# Always sending two requests
 
 	constructor: ->
+
+		@_jQueryWrapped = $( @ )
+		@_notificationId = "tcs_notifier"
+		@_data = { }
+		@_settings = { }
 
 		@initialize()
 		return
 
 	initialize: =>
 
-		@_notificationId = "tcs_notifier"
+		@_jQueryWrapped.on
 
+		# Load settings file
+		
+		$.getJSON './settings.json'
+		.done ( data ) =>
+			@_settings = data
+			@_jQueryWrapped.trigger 'settings_loaded'
+			return
+
+		# EventListener always need to be registered before the eventpage returns else the cbs won't be triggerd.
+
+		chrome.runtime.onInstalled.addListener ( details ) =>
+			# first install, trigger update and set alarm
+			if details.reason is "install"
+				@update()
+			return
+
+		# Update on alarm event
+		chrome.alarms.onAlarm.addListener @updateData
+
+		# Get the safed data
 		chrome.storage.sync.get
 			'data': { "items": [] }
 		, ( storage ) =>
-			@data = storage.data
+			@_data = storage.data
+			@_jQueryWrapped.trigger 'storage_loaded'
 			
-			@updateData()
 			return
 
+		# Initialize with settings
 		chrome.storage.sync.get
 			'requestInterval': if _settings.requestInterval? then _settings.requestInterval else 1
 			'extensionTitle': if _settings.extensionTitle? then _settings.extensionTitle else ""
@@ -36,10 +66,7 @@ class Background
 			@enablePopup options.browserButtonAction is "openPopup"
 			chrome.browserAction.setTitle { 'title': options.extensionTitle }
 			chrome.alarms.create "periodInMinutes": options.requestInterval
-			chrome.alarms.onAlarm.addListener( @updateData )
-			return			
-
-		chrome.alarms.onAlarm.addListener @updateData
+			return
 
 		chrome.storage.onChanged.addListener ( changes, areaName ) =>
 			if changes.requestInterval?
@@ -65,11 +92,13 @@ class Background
 			return
 		
 		chrome.browserAction.onClicked.addListener ->
+			console.log _settings.popupButtonURL
 			chrome.storage.sync.get
 				'popupButtonURL': if _settings.popupButtonURL? then _settings.popupButtonURL else ""
 			, ( options ) ->
-					chrome.tabs.create
-						url: options.popupButtonURL
+				console.log  options.popupButtonURL
+				chrome.tabs.create
+					url: options.popupButtonURL
 
 				return
 			return
@@ -105,7 +134,7 @@ class Background
 
 				for _newEntry in data
 					_found = false
-					for _oldEntry in @data.items
+					for _oldEntry in @_data.items
 						if _oldEntry.title is _newEntry.title
 							_found = true
 							break
@@ -147,10 +176,10 @@ class Background
 
 	saveData: ( items ) =>
 
-		@data.items = items
+		@_data.items = items
 
 		chrome.storage.sync.set
-			'data': @data
+			'data': @_data
 		, ->
 			return
 
@@ -163,15 +192,9 @@ class Background
 
 		return
 
-_settings = {}
 
-$.getJSON './settings.json'
-	.done ( data ) ->
-		_settings = data
-		return
-	.always =>
-		background = new Background()
-		@getData = ->
-			# return
-			background.data
-		return
+background = new Background()
+# @ so it is accessable outside the closure
+@getData = ->
+	# return
+	background.data

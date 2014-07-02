@@ -1,6 +1,6 @@
 # Chrome Extension Tuturial
 
-## Useful Links to start building your own extension
+### Useful Links to start building your own extension
 
 
 [http://code.tutsplus.com/tutorials/developing-google-chrome-extensions--net-33076](http://code.tutsplus.com/tutorials/developing-google-chrome-extensions--net-33076)  

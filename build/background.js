@@ -7,6 +7,9 @@
       this.saveData = __bind(this.saveData, this);
       this.updateData = __bind(this.updateData, this);
       this.initialize = __bind(this.initialize, this);
+      $(this).on('test', function() {
+        console.log("ABC");
+      });
       this.initialize();
       return;
     }
@@ -70,14 +73,15 @@
         };
       })(this));
       chrome.browserAction.onClicked.addListener(function() {
+        console.log(_settings.popupButtonURL);
         chrome.storage.sync.get({
           'popupButtonURL': _settings.popupButtonURL != null ? _settings.popupButtonURL : ""
         }, function(options) {
-          return chrome.tabs.create({
+          console.log(options.popupButtonURL);
+          chrome.tabs.create({
             url: options.popupButtonURL
           });
         });
-        return;
       });
     };
 
@@ -175,6 +179,8 @@
 
   })();
 
+  console.log("LOAD");
+
   _settings = {};
 
   $.getJSON('./settings.json').done(function(data) {
@@ -183,6 +189,7 @@
     return function() {
       var background;
       background = new Background();
+      $(background).trigger('test');
       _this.getData = function() {
         return background.data;
       };
